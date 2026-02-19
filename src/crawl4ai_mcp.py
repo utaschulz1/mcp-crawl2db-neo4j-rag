@@ -55,6 +55,16 @@ dotenv_path = project_root / '.env'
 # Force override of existing environment variables
 load_dotenv(dotenv_path, override=True)
 
+# Load cross-encoder model once at module level
+_reranking_model = None
+if os.getenv("USE_RERANKING", "false") == "true":
+    try:
+        _reranking_model = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        print("Cross-encoder reranking model loaded")
+    except Exception as e:
+        print(f"Failed to load reranking model: {e}")
+        _reranking_model = None
+
 # Helper functions for Neo4j validation and error handling
 def validate_neo4j_connection() -> bool:
     """Check if Neo4j environment variables are configured."""
@@ -146,14 +156,8 @@ async def crawl4ai_lifespan(server: FastMCP) -> AsyncIterator[Crawl4AIContext]:
     # Initialize Supabase client
     supabase_client = get_supabase_client()
     
-    # Initialize cross-encoder model for reranking if enabled
-    reranking_model = None
-    if os.getenv("USE_RERANKING", "false") == "true":
-        try:
-            reranking_model = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-        except Exception as e:
-            print(f"Failed to load reranking model: {e}")
-            reranking_model = None
+    # Use the module-level cross-encoder model (loaded once at startup)
+    reranking_model = _reranking_model
     
     # Initialize Neo4j components if configured and enabled
     knowledge_validator = None
