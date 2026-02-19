@@ -65,6 +65,25 @@ if os.getenv("USE_RERANKING", "false") == "true":
         print(f"Failed to load reranking model: {e}")
         _reranking_model = None
 
+# Initialize Supabase client once at module level (stateless HTTP client, safe to share)
+_supabase_client = get_supabase_client()
+
+# Lazy browser singleton — only created when a crawl tool is first called
+_crawler: Optional[AsyncWebCrawler] = None
+_crawler_lock = asyncio.Lock()
+
+async def _get_crawler() -> AsyncWebCrawler:
+    """Return the shared crawler, creating it on first call."""
+    global _crawler
+    if _crawler is None:  # fast path — no lock once initialised
+        async with _crawler_lock:
+            if _crawler is None:  # double-check after acquiring lock
+                print("Launching browser (lazy init)...")
+                config = BrowserConfig(headless=True, verbose=False)
+                _crawler = AsyncWebCrawler(config=config)
+                await _crawler.__aenter__()
+    return _crawler
+
 # Helper functions for Neo4j validation and error handling
 def validate_neo4j_connection() -> bool:
     """Check if Neo4j environment variables are configured."""
@@ -126,7 +145,6 @@ def validate_github_url(repo_url: str) -> Dict[str, Any]:
 @dataclass
 class Crawl4AIContext:
     """Context for the Crawl4AI MCP server."""
-    crawler: AsyncWebCrawler
     supabase_client: Client
     reranking_model: Optional[CrossEncoder] = None
     knowledge_validator: Optional[Any] = None  # KnowledgeGraphValidator when available
@@ -135,56 +153,41 @@ class Crawl4AIContext:
 @asynccontextmanager
 async def crawl4ai_lifespan(server: FastMCP) -> AsyncIterator[Crawl4AIContext]:
     """
-    Manages the Crawl4AI client lifecycle.
-    
+    Manages the Crawl4AI server lifecycle.
+
+    Supabase client and the cross-encoder model are module-level singletons so
+    this lifespan completes in milliseconds.  The browser is never launched here
+    — it is created lazily on the first crawl request via _get_crawler().
+
     Args:
         server: The FastMCP server instance
-        
+
     Yields:
-        Crawl4AIContext: The context containing the Crawl4AI crawler and Supabase client
+        Crawl4AIContext: The context containing shared resources
     """
-    # Create browser configuration
-    browser_config = BrowserConfig(
-        headless=True,
-        verbose=False
-    )
-    
-    # Initialize the crawler
-    crawler = AsyncWebCrawler(config=browser_config)
-    await crawler.__aenter__()
-    
-    # Initialize Supabase client
-    supabase_client = get_supabase_client()
-    
-    # Use the module-level cross-encoder model (loaded once at startup)
-    reranking_model = _reranking_model
-    
     # Initialize Neo4j components if configured and enabled
     knowledge_validator = None
     repo_extractor = None
-    
-    # Check if knowledge graph functionality is enabled
+
     knowledge_graph_enabled = os.getenv("USE_KNOWLEDGE_GRAPH", "false") == "true"
-    
+
     if knowledge_graph_enabled:
         neo4j_uri = os.getenv("NEO4J_URI")
         neo4j_user = os.getenv("NEO4J_USER")
         neo4j_password = os.getenv("NEO4J_PASSWORD")
-        
+
         if neo4j_uri and neo4j_user and neo4j_password:
             try:
                 print("Initializing knowledge graph components...")
-                
-                # Initialize knowledge graph validator
+
                 knowledge_validator = KnowledgeGraphValidator(neo4j_uri, neo4j_user, neo4j_password)
                 await knowledge_validator.initialize()
                 print("✓ Knowledge graph validator initialized")
-                
-                # Initialize repository extractor
+
                 repo_extractor = DirectNeo4jExtractor(neo4j_uri, neo4j_user, neo4j_password)
                 await repo_extractor.initialize()
                 print("✓ Repository extractor initialized")
-                
+
             except Exception as e:
                 print(f"Failed to initialize Neo4j components: {format_neo4j_error(e)}")
                 knowledge_validator = None
@@ -193,18 +196,16 @@ async def crawl4ai_lifespan(server: FastMCP) -> AsyncIterator[Crawl4AIContext]:
             print("Neo4j credentials not configured - knowledge graph tools will be unavailable")
     else:
         print("Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable")
-    
+
     try:
         yield Crawl4AIContext(
-            crawler=crawler,
-            supabase_client=supabase_client,
-            reranking_model=reranking_model,
+            supabase_client=_supabase_client,
+            reranking_model=_reranking_model,
             knowledge_validator=knowledge_validator,
-            repo_extractor=repo_extractor
+            repo_extractor=repo_extractor,
         )
     finally:
-        # Clean up all components
-        await crawler.__aexit__(None, None, None)
+        # Neo4j cleanup
         if knowledge_validator:
             try:
                 await knowledge_validator.close()
@@ -217,6 +218,12 @@ async def crawl4ai_lifespan(server: FastMCP) -> AsyncIterator[Crawl4AIContext]:
                 print("✓ Repository extractor closed")
             except Exception as e:
                 print(f"Error closing repository extractor: {e}")
+        # Browser cleanup — only if a crawl was ever requested
+        global _crawler
+        if _crawler is not None:
+            print("Closing browser...")
+            await _crawler.__aexit__(None, None, None)
+            _crawler = None  # reset so a future connection can re-init if needed
 
 # Initialize FastMCP server
 mcp = FastMCP(
@@ -405,10 +412,9 @@ async def crawl_single_page(ctx: Context, url: str) -> str:
         Summary of the crawling operation and storage in Supabase
     """
     try:
-        # Get the crawler from the context
-        crawler = ctx.request_context.lifespan_context.crawler
+        crawler = await _get_crawler()
         supabase_client = ctx.request_context.lifespan_context.supabase_client
-        
+
         # Configure the crawl
         run_config = CrawlerRunConfig(cache_mode=CacheMode.BYPASS, stream=False)
         
@@ -552,10 +558,9 @@ async def smart_crawl_url(ctx: Context, url: str, max_depth: int = 3, max_concur
         JSON string with crawl summary and storage information
     """
     try:
-        # Get the crawler from the context
-        crawler = ctx.request_context.lifespan_context.crawler
+        crawler = await _get_crawler()
         supabase_client = ctx.request_context.lifespan_context.supabase_client
-        
+
         # Determine the crawl strategy
         crawl_results = []
         crawl_type = None
