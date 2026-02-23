@@ -165,18 +165,18 @@ def process_chunk_with_context(args):
     return generate_contextual_embedding(full_document, content)
 
 def add_documents_to_supabase(
-    client: Client, 
-    urls: List[str], 
+    client: Client,
+    urls: List[str],
     chunk_numbers: List[int],
-    contents: List[str], 
+    contents: List[str],
     metadatas: List[Dict[str, Any]],
     url_to_full_document: Dict[str, str],
     batch_size: int = 20
-) -> None:
+) -> tuple[int, bool]:
     """
     Add documents to the Supabase crawled_pages table in batches.
     Deletes existing records with the same URLs before inserting to prevent duplicates.
-    
+
     Args:
         client: Supabase client
         urls: List of URLs
@@ -185,10 +185,17 @@ def add_documents_to_supabase(
         metadatas: List of document metadata
         url_to_full_document: Dictionary mapping URLs to their full document content
         batch_size: Size of each batch for insertion
+
+    Returns:
+        (successful_inserts, delete_ok): actual number of records inserted and whether
+        all deletes succeeded.
     """
     # Get unique URLs to delete existing records
     unique_urls = list(set(urls))
-    
+
+    delete_ok = True
+    successful_inserts = 0
+
     # Delete existing records for these URLs in a single operation
     try:
         if unique_urls:
@@ -202,6 +209,7 @@ def add_documents_to_supabase(
                 client.table("crawled_pages").delete().eq("url", url).execute()
             except Exception as inner_e:
                 print(f"Error deleting record for URL {url}: {inner_e}")
+                delete_ok = False
                 # Continue with the next URL even if one fails
     
     # Check if MODEL_CHOICE is set for contextual embeddings
@@ -291,6 +299,7 @@ def add_documents_to_supabase(
             try:
                 client.table("crawled_pages").insert(batch_data).execute()
                 # Success - break out of retry loop
+                successful_inserts += len(batch_data)
                 break
             except Exception as e:
                 if retry < max_retries - 1:
@@ -303,16 +312,16 @@ def add_documents_to_supabase(
                     print(f"Failed to insert batch after {max_retries} attempts: {e}")
                     # Optionally, try inserting records one by one as a last resort
                     print("Attempting to insert records individually...")
-                    successful_inserts = 0
                     for record in batch_data:
                         try:
                             client.table("crawled_pages").insert(record).execute()
                             successful_inserts += 1
                         except Exception as individual_error:
                             print(f"Failed to insert individual record for URL {record['url']}: {individual_error}")
-                    
-                    if successful_inserts > 0:
-                        print(f"Successfully inserted {successful_inserts}/{len(batch_data)} records individually")
+
+                    print(f"Successfully inserted {successful_inserts}/{len(batch_data)} records individually")
+
+    return successful_inserts, delete_ok
 
 def search_documents(
     client: Client, 
@@ -493,10 +502,10 @@ def add_code_examples_to_supabase(
     summaries: List[str],
     metadatas: List[Dict[str, Any]],
     batch_size: int = 20
-):
+) -> tuple[int, bool]:
     """
     Add code examples to the Supabase code_examples table in batches.
-    
+
     Args:
         client: Supabase client
         urls: List of URLs
@@ -505,10 +514,17 @@ def add_code_examples_to_supabase(
         summaries: List of code example summaries
         metadatas: List of metadata dictionaries
         batch_size: Size of each batch for insertion
+
+    Returns:
+        (successful_inserts, delete_ok): actual number of records inserted and whether
+        all deletes succeeded.
     """
     if not urls:
-        return
-        
+        return 0, True
+
+    delete_ok = True
+    successful_inserts = 0
+
     # Delete existing records for these URLs
     unique_urls = list(set(urls))
     for url in unique_urls:
@@ -516,6 +532,7 @@ def add_code_examples_to_supabase(
             client.table('code_examples').delete().eq('url', url).execute()
         except Exception as e:
             print(f"Error deleting existing code examples for {url}: {e}")
+            delete_ok = False
     
     # Process in batches
     total_items = len(urls)
@@ -564,11 +581,12 @@ def add_code_examples_to_supabase(
         # Insert batch into Supabase with retry logic
         max_retries = 3
         retry_delay = 1.0  # Start with 1 second delay
-        
+
         for retry in range(max_retries):
             try:
                 client.table('code_examples').insert(batch_data).execute()
                 # Success - break out of retry loop
+                successful_inserts += len(batch_data)
                 break
             except Exception as e:
                 if retry < max_retries - 1:
@@ -581,28 +599,31 @@ def add_code_examples_to_supabase(
                     print(f"Failed to insert batch after {max_retries} attempts: {e}")
                     # Optionally, try inserting records one by one as a last resort
                     print("Attempting to insert records individually...")
-                    successful_inserts = 0
                     for record in batch_data:
                         try:
                             client.table('code_examples').insert(record).execute()
                             successful_inserts += 1
                         except Exception as individual_error:
                             print(f"Failed to insert individual record for URL {record['url']}: {individual_error}")
-                    
-                    if successful_inserts > 0:
-                        print(f"Successfully inserted {successful_inserts}/{len(batch_data)} records individually")
+
+                    print(f"Successfully inserted {successful_inserts}/{len(batch_data)} records individually")
         print(f"Inserted batch {i//batch_size + 1} of {(total_items + batch_size - 1)//batch_size} code examples")
 
+    return successful_inserts, delete_ok
 
-def update_source_info(client: Client, source_id: str, summary: str, word_count: int):
+
+def update_source_info(client: Client, source_id: str, summary: str, word_count: int) -> bool:
     """
     Update or insert source information in the sources table.
-    
+
     Args:
         client: Supabase client
         source_id: The source ID (domain)
         summary: Summary of the source
         word_count: Total word count for the source
+
+    Returns:
+        True if the operation succeeded, False otherwise.
     """
     try:
         # Try to update existing source
@@ -611,7 +632,7 @@ def update_source_info(client: Client, source_id: str, summary: str, word_count:
             'total_word_count': word_count,
             'updated_at': 'now()'
         }).eq('source_id', source_id).execute()
-        
+
         # If no rows were updated, insert new source
         if not result.data:
             client.table('sources').insert({
@@ -622,9 +643,12 @@ def update_source_info(client: Client, source_id: str, summary: str, word_count:
             print(f"Created new source: {source_id}")
         else:
             print(f"Updated source: {source_id}")
-            
+
+        return True
+
     except Exception as e:
         print(f"Error updating source {source_id}: {e}")
+        return False
 
 
 def extract_source_summary(source_id: str, content: str, max_length: int = 500) -> str:

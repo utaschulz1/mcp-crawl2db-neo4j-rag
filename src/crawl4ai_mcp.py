@@ -457,13 +457,15 @@ async def crawl_single_page(ctx: Context, url: str) -> str:
             
             # Update source information FIRST (before inserting documents)
             source_summary = extract_source_summary(source_id, result.markdown[:5000])  # Use first 5000 chars for summary
-            update_source_info(supabase_client, source_id, source_summary, total_word_count)
-            
+            source_ok = update_source_info(supabase_client, source_id, source_summary, total_word_count)
+
             # Add documentation chunks to Supabase (AFTER source exists)
-            add_documents_to_supabase(supabase_client, urls, chunk_numbers, contents, metadatas, url_to_full_document)
-            
+            chunks_stored, docs_delete_ok = add_documents_to_supabase(supabase_client, urls, chunk_numbers, contents, metadatas, url_to_full_document)
+
             # Extract and process code examples only if enabled
             extract_code_examples = os.getenv("USE_AGENTIC_RAG", "false") == "true"
+            code_stored, code_delete_ok = 0, True
+            code_blocks = []
             if extract_code_examples:
                 code_blocks = extract_code_blocks(result.markdown)
                 if code_blocks:
@@ -472,23 +474,23 @@ async def crawl_single_page(ctx: Context, url: str) -> str:
                     code_examples = []
                     code_summaries = []
                     code_metadatas = []
-                    
+
                     # Process code examples in parallel
                     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                         # Prepare arguments for parallel processing
-                        summary_args = [(block['code'], block['context_before'], block['context_after']) 
+                        summary_args = [(block['code'], block['context_before'], block['context_after'])
                                         for block in code_blocks]
-                        
+
                         # Generate summaries in parallel
                         summaries = list(executor.map(process_code_example, summary_args))
-                    
+
                     # Prepare code example data
                     for i, (block, summary) in enumerate(zip(code_blocks, summaries)):
                         code_urls.append(url)
                         code_chunk_numbers.append(i)
                         code_examples.append(block['code'])
                         code_summaries.append(summary)
-                        
+
                         # Create metadata for code example
                         code_meta = {
                             "chunk_index": i,
@@ -498,22 +500,25 @@ async def crawl_single_page(ctx: Context, url: str) -> str:
                             "word_count": len(block['code'].split())
                         }
                         code_metadatas.append(code_meta)
-                    
+
                     # Add code examples to Supabase
-                    add_code_examples_to_supabase(
-                        supabase_client, 
-                        code_urls, 
-                        code_chunk_numbers, 
-                        code_examples, 
-                        code_summaries, 
+                    code_stored, code_delete_ok = add_code_examples_to_supabase(
+                        supabase_client,
+                        code_urls,
+                        code_chunk_numbers,
+                        code_examples,
+                        code_summaries,
                         code_metadatas
                     )
-            
+
+            delete_ok = docs_delete_ok and code_delete_ok
+
             return json.dumps({
-                "success": True,
+                "success": source_ok and chunks_stored > 0,
                 "url": url,
-                "chunks_stored": len(chunks),
-                "code_examples_stored": len(code_blocks) if code_blocks else 0,
+                "chunks_stored": chunks_stored,
+                "code_examples_stored": code_stored,
+                "delete_ok": delete_ok,
                 "content_length": len(result.markdown),
                 "total_word_count": total_word_count,
                 "source_id": source_id,
@@ -647,50 +652,53 @@ async def smart_crawl_url(ctx: Context, url: str, max_depth: int = 3, max_concur
             source_summary_args = [(source_id, content) for source_id, content in source_content_map.items()]
             source_summaries = list(executor.map(lambda args: extract_source_summary(args[0], args[1]), source_summary_args))
         
+        sources_ok = True
         for (source_id, _), summary in zip(source_summary_args, source_summaries):
             word_count = source_word_counts.get(source_id, 0)
-            update_source_info(supabase_client, source_id, summary, word_count)
-        
+            if not update_source_info(supabase_client, source_id, summary, word_count):
+                sources_ok = False
+
         # Add documentation chunks to Supabase (AFTER sources exist)
         batch_size = 20
-        add_documents_to_supabase(supabase_client, urls, chunk_numbers, contents, metadatas, url_to_full_document, batch_size=batch_size)
-        
+        chunks_stored, docs_delete_ok = add_documents_to_supabase(supabase_client, urls, chunk_numbers, contents, metadatas, url_to_full_document, batch_size=batch_size)
+
         # Extract and process code examples from all documents only if enabled
         extract_code_examples_enabled = os.getenv("USE_AGENTIC_RAG", "false") == "true"
+        code_stored, code_delete_ok = 0, True
+        code_examples = []
         if extract_code_examples_enabled:
             all_code_blocks = []
             code_urls = []
             code_chunk_numbers = []
-            code_examples = []
             code_summaries = []
             code_metadatas = []
-            
+
             # Extract code blocks from all documents
             for doc in crawl_results:
                 source_url = doc['url']
                 md = doc['markdown']
                 code_blocks = extract_code_blocks(md)
-                
+
                 if code_blocks:
                     # Process code examples in parallel
                     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                         # Prepare arguments for parallel processing
-                        summary_args = [(block['code'], block['context_before'], block['context_after']) 
+                        summary_args = [(block['code'], block['context_before'], block['context_after'])
                                         for block in code_blocks]
-                        
+
                         # Generate summaries in parallel
                         summaries = list(executor.map(process_code_example, summary_args))
-                    
+
                     # Prepare code example data
                     parsed_url = urlparse(source_url)
                     source_id = parsed_url.netloc or parsed_url.path
-                    
+
                     for i, (block, summary) in enumerate(zip(code_blocks, summaries)):
                         code_urls.append(source_url)
                         code_chunk_numbers.append(len(code_examples))  # Use global code example index
                         code_examples.append(block['code'])
                         code_summaries.append(summary)
-                        
+
                         # Create metadata for code example
                         code_meta = {
                             "chunk_index": len(code_examples) - 1,
@@ -700,26 +708,29 @@ async def smart_crawl_url(ctx: Context, url: str, max_depth: int = 3, max_concur
                             "word_count": len(block['code'].split())
                         }
                         code_metadatas.append(code_meta)
-            
+
             # Add all code examples to Supabase
             if code_examples:
-                add_code_examples_to_supabase(
-                    supabase_client, 
-                    code_urls, 
-                    code_chunk_numbers, 
-                    code_examples, 
-                    code_summaries, 
+                code_stored, code_delete_ok = add_code_examples_to_supabase(
+                    supabase_client,
+                    code_urls,
+                    code_chunk_numbers,
+                    code_examples,
+                    code_summaries,
                     code_metadatas,
                     batch_size=batch_size
                 )
-        
+
+        delete_ok = docs_delete_ok and code_delete_ok
+
         return json.dumps({
-            "success": True,
+            "success": sources_ok and chunks_stored > 0,
             "url": url,
             "crawl_type": crawl_type,
             "pages_crawled": len(crawl_results),
-            "chunks_stored": chunk_count,
-            "code_examples_stored": len(code_examples),
+            "chunks_stored": chunks_stored,
+            "code_examples_stored": code_stored,
+            "delete_ok": delete_ok,
             "sources_updated": len(source_content_map),
             "urls_crawled": [doc['url'] for doc in crawl_results][:5] + (["..."] if len(crawl_results) > 5 else [])
         }, indent=2)
