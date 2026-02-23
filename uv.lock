@@ -6,6 +6,12 @@ resolution-markers = [
     "python_full_version < '3.14'",
 ]
 
+[manifest]
+members = [
+    "crawl4ai-mcp",
+    "mcp-crawl4ai2vectordb",
+]
+
 [[package]]
 name = "aiofiles"
 version = "25.1.0"
@@ -1174,6 +1180,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/25/ae/588691c45b38f4fba
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ae/79/fe0e20c3358997a80911af51bad927b5ea2f343ef95ab092b19c9cc48b59/mcp-1.7.1-py3-none-any.whl", hash = "sha256:f7e6108977db6d03418495426c7ace085ba2341b75197f8727f96f9cfd30057a", size = 100365, upload-time = "2025-05-02T17:01:54.674Z" },
 ]
+
+[[package]]
+name = "mcp-crawl4ai2vectordb"
+version = "0.1.0"
+source = { virtual = "mcp_crawl4ai2vectordb" }
 
 [[package]]
 name = "mdurl"

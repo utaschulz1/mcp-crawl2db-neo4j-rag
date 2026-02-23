@@ -1,0 +1,263 @@
+utasc@TABLET-1EFHU78L:~/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag$ uv run python -u src/crawl4ai_mcp.py
+2026-02-23 12:35:40 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:40 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:40 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/cross-encoder/ms-marco-MiniLM-L6-v2/c5ee24cb16019beea0893ab7796b1df96625c6b8/config.json "HTTP/1.1 200 OK"
+Loading weights: 100%|█| 105/105 [00:00<00:00, 513.18it/s, Materializing param=classifier.weight
+BertForSequenceClassification LOAD REPORT from: cross-encoder/ms-marco-MiniLM-L-6-v2
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED    :can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/cross-encoder/ms-marco-MiniLM-L6-v2/c5ee24cb16019beea0893ab7796b1df96625c6b8/config.json "HTTP/1.1 200 OK"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-02-23 12:35:41 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/cross-encoder/ms-marco-MiniLM-L6-v2/c5ee24cb16019beea0893ab7796b1df96625c6b8/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L-6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:41 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L-6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/cross-encoder/ms-marco-MiniLM-L6-v2/c5ee24cb16019beea0893ab7796b1df96625c6b8/README.md "HTTP/1.1 200 OK"
+2026-02-23 12:35:42 - sentence_transformers.cross_encoder.CrossEncoder - INFO - Use pytorch device: cpu
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L-6-v2 "HTTP/1.1 307 Temporary Redirect"
+2026-02-23 12:35:42 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L6-v2 "HTTP/1.1 200 OK"
+Cross-encoder reranking model loaded
+INFO:     Started server process [97545]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8051 (Press CTRL+C to quit)
+2026-02-23 12:40:34 - mcp.server.sse - WARNING - Received request without session_id
+INFO:     127.0.0.1:58178 - "POST /messages/ HTTP/1.1" 400 Bad Request
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:43982 - "GET /sse HTTP/1.1" 200 OK
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:38022 - "GET /sse HTTP/1.1" 200 OK
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:34392 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34408 - "POST /messages/?session_id=219dc738a70a4f79945605887dbe7c24 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:34412 - "POST /messages/?session_id=219dc738a70a4f79945605887dbe7c24 HTTP/1.1" 202 Accepted
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+  |     result = await app(  # type: ignore[func-returns-value]
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+  |     return await self.app(scope, receive, send)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/applications.py", line 107, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+  |     await self.app(scope, receive, _send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+  |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+  |     await route.handle(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 290, in handle
+  |     await self.app(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 78, in app
+  |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 75, in app
+  |     response = await f(request)
+  |                ^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 648, in sse_endpoint
+  |     await handle_sse(request.scope, request.receive, request._send)  # type: ignore[reportPrivateUsage]
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 582, in handle_sse
+  |     async with sse.connect_sse(
+  |                ^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/sse.py", line 123, in connect_sse
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/sse.py", line 131, in connect_sse
+    |     yield (read_stream, write_stream)
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 587, in handle_sse
+    |     await self._mcp_server.run(
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/lowlevel/server.py", line 483, in run
+    |     async with AsyncExitStack() as stack:
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 754, in __aexit__
+    |     raise exc_details[1]
+    |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 737, in __aexit__
+    |     cb_suppress = await cb(*exc_details)
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/shared/session.py", line 209, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/shared/session.py", line 331, in _receive_loop
+      |     await self._received_request(responder)
+      |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/session.py", line 163, in _received_request
+      |     raise RuntimeError(
+      | RuntimeError: Received request before initialization was complete
+      +------------------------------------
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:44520 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44536 - "POST /messages/?session_id=63e465d3d92241a3a49f9d437445ba44 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:44548 - "POST /messages/?session_id=63e465d3d92241a3a49f9d437445ba44 HTTP/1.1" 202 Accepted
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+  |     result = await app(  # type: ignore[func-returns-value]
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+  |     return await self.app(scope, receive, send)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/applications.py", line 107, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+  |     await self.app(scope, receive, _send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+  |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 716, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 736, in app
+  |     await route.handle(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 290, in handle
+  |     await self.app(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 78, in app
+  |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+  |     raise exc
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/starlette/routing.py", line 75, in app
+  |     response = await f(request)
+  |                ^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 648, in sse_endpoint
+  |     await handle_sse(request.scope, request.receive, request._send)  # type: ignore[reportPrivateUsage]
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 582, in handle_sse
+  |     async with sse.connect_sse(
+  |                ^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/sse.py", line 123, in connect_sse
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/sse.py", line 131, in connect_sse
+    |     yield (read_stream, write_stream)
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/fastmcp/server.py", line 587, in handle_sse
+    |     await self._mcp_server.run(
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/lowlevel/server.py", line 483, in run
+    |     async with AsyncExitStack() as stack:
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 754, in __aexit__
+    |     raise exc_details[1]
+    |   File "/home/utasc/miniconda3/envs/course_maven_nlp_basics/lib/python3.12/contextlib.py", line 737, in __aexit__
+    |     cb_suppress = await cb(*exc_details)
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/shared/session.py", line 209, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/shared/session.py", line 331, in _receive_loop
+      |     await self._received_request(responder)
+      |   File "/home/utasc/projects/Course-ColeMedin-MCP-Crawl4AI/mcp-crawl4ai-rag/.venv/lib/python3.12/site-packages/mcp/server/session.py", line 163, in _received_request
+      |     raise RuntimeError(
+      | RuntimeError: Received request before initialization was complete
+      +------------------------------------
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:43046 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43050 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:44882 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44894 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:44894 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:44894 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+2026-02-23 12:43:51 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+INFO:     127.0.0.1:44904 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:44912 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+2026-02-23 12:43:51 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2026-02-23 12:43:51 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest
+INFO:     127.0.0.1:50608 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+2026-02-23 12:45:08 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+Launching browser (lazy init)...
+[FETCH]... ↓ https://ai.pydantic.dev/                                                                             | ✓ | ⏱: 2.05s
+[SCRAPE].. ◆ https://ai.pydantic.dev/                                                                             | ✓ | ⏱: 0.20s
+[COMPLETE] ● https://ai.pydantic.dev/                                                                             | ✓ | ⏱: 2.25s
+2026-02-23 12:45:15 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:17 - httpx - INFO - HTTP Request: PATCH https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/sources?source_id=eq.ai.pydantic.dev "HTTP/2 200 OK"
+2026-02-23 12:45:17 - httpx - INFO - HTTP Request: POST https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/sources "HTTP/2 201 Created"
+Created new source: ai.pydantic.dev
+2026-02-23 12:45:17 - httpx - INFO - HTTP Request: DELETE https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/crawled_pages?url=in.%28%22https%3A%2F%2Fai.pydantic.dev%2F%22%29 "HTTP/2 200 OK"
+
+
+Use contextual embeddings: True
+
+
+2026-02-23 12:45:18 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:19 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:22 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-02-23 12:45:23 - httpx - INFO - HTTP Request: POST https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/crawled_pages?columns=%22chunk_number%22%2C%22metadata%22%2C%22url%22%2C%22content%22%2C%22embedding%22%2C%22source_id%22 "HTTP/2 201 Created"
+2026-02-23 12:45:25 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:25 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-23 12:45:25 - httpx - INFO - HTTP Request: DELETE https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/code_examples?url=eq.https%3A%2F%2Fai.pydantic.dev%2F "HTTP/2 200 OK"
+2026-02-23 12:45:25 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2026-02-23 12:45:26 - httpx - INFO - HTTP Request: POST https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/code_examples?columns=%22chunk_number%22%2C%22metadata%22%2C%22url%22%2C%22content%22%2C%22summary%22%2C%22embedding%22%2C%22source_id%22 "HTTP/2 201 Created"
+Inserted batch 1 of 1 code examples
+INFO:     127.0.0.1:38566 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+2026-02-23 12:46:21 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-02-23 12:46:21 - httpx - INFO - HTTP Request: GET https://cxxgijcunvjvwxefsspc.supabase.co/rest/v1/sources?select=%2A&order=source_id.asc "HTTP/2 200 OK"
+INFO:     127.0.0.1:45280 - "POST /messages/?session_id=f7a794dd46174f8bae9e31ec37de3015 HTTP/1.1" 202 Accepted
+Knowledge graph functionality disabled - set USE_KNOWLEDGE_GRAPH=true to enable
+INFO:     127.0.0.1:45284 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45292 - "POST /messages/?session_id=5aa34e98f16f42beb97b70380fd50d0a HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45292 - "POST /messages/?session_id=5aa34e98f16f42beb97b70380fd50d0a HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45292 - "POST /messages/?session_id=5aa34e98f16f42beb97b70380fd50d0a HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45300 - "POST /messages/?session_id=5aa34e98f16f42beb97b70380fd50d0a HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:45308 - "POST /messages/?session_id=5aa34e98f16f42beb97b70380fd50d0a HTTP/1.1" 202 Accepted
+2026-02-23 12:47:01 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-02-23 12:47:01 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2026-02-23 12:47:01 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest

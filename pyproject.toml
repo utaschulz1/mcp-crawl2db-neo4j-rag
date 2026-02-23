@@ -13,3 +13,8 @@ dependencies = [
     "sentence-transformers>=4.1.0",
     "neo4j>=5.28.1",
 ]
+
+[tool.uv.workspace]
+members = [
+    "mcp_crawl4ai2vectordb",
+]
